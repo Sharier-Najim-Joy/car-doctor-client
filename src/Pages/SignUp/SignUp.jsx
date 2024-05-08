@@ -1,17 +1,20 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import img from '../../assets/images/login/login.svg'
 import { FaFacebook } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
-import { AuthContext } from '../../provider/AuthProvider';
+// import { AuthContext } from '../../provider/AuthProvider';
+import useAuth from '../../hooks/useAuth';
 
 
 
 const SignUp = () => {
-    const {createUser} = useContext(AuthContext)
+    // const {createUser, userUpdateProfile} = useContext(AuthContext)
+    const {createUser, userUpdateProfile} = useAuth();
+    const navigate = useNavigate()
 
     const [showPass,setShowPass] = useState(false)
 
@@ -31,6 +34,10 @@ const SignUp = () => {
         createUser(email,password)
         .then((result) => {
             console.log(result.user);
+            userUpdateProfile(name)
+            .then(()=>{
+                navigate('/')
+            })
           })
           .catch((error) => {
             console.log(error);

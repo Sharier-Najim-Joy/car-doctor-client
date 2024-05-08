@@ -1,34 +1,47 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import img from '../../assets/images/login/login.svg'
 import { FaFacebook } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
-import { AuthContext } from '../../provider/AuthProvider';
+// import { AuthContext } from '../../provider/AuthProvider';
+import useAuth from '../../hooks/useAuth';
+// import axios from 'axios';
+
 
 
 
 
 const Login = () => {
     const [showPass,setShowPass] = useState(false)
-    const {signIn} = useContext(AuthContext)
+    // const {signIn} = useContext(AuthContext)
+    const {signIn} = useAuth()
+    const location = useLocation();
+    const navigate= useNavigate()
 
     const handleLogin = event =>{
         event.preventDefault();
         const form = event.target;
         const email = form.email.value;
         const password = form.password.value;
-        // const userInfo = {
-        //     email,
-        //     password
-        // }
-        // console.log(userInfo);
 
         signIn(email,password)
         .then(result=>{
             console.log(result.user);
+            // const user = {email}
+            
+            //get access token
+            // axios.post('https://car-doctor-server-nine-lac.vercel.app/jwt', user,{withCredentials: true})
+            // .then(res=>{
+            //     console.log(res.data);
+            //     if(res.data.success){
+            //         // navigate(location?.state ? location?.state : '/')
+            //     }
+            // })
+            navigate(location?.state ? location?.state : '/')
+            
         })
         .catch(error=>{
             console.log(error);

@@ -2,38 +2,53 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '../../../assets/logo.svg'
 import { CiSearch } from "react-icons/ci";
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../provider/AuthProvider';
 
 
 
 const NavBar = () => {
 
-    const [theme,setTheme] = useState('light')
+    const { user,logOut } = useContext(AuthContext);
+    const [theme, setTheme] = useState('light')
 
-    useEffect(()=>{
-        localStorage.setItem('theme',theme);
+    useEffect(() => {
+        localStorage.setItem('theme', theme);
         const localTheme = localStorage.getItem('theme');
-        document.querySelector('html').setAttribute('data-theme',localTheme);
+        document.querySelector('html').setAttribute('data-theme', localTheme);
 
         // document.querySelector('html').setAttribute('data-theme',theme)
-    },[theme])
+    }, [theme])
 
     const handleTheme = e => {
         // console.log(e.target.checked);
-        if(e.target.checked){
+        if (e.target.checked) {
             setTheme('dark')
         }
-        else{
+        else {
             setTheme('light')
         }
     }
 
+    const handleLogOut = () =>{
+        logOut()
+        .then(()=>{
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+    }
+  
+
     const navItems = <>
         <li><NavLink to='/'>Home</NavLink></li>
-        <li><NavLink to={'/about'}>About</NavLink></li>
-        <li><NavLink to='/services'>Services</NavLink></li>
-        <li><NavLink to={'/blog'}>Blog</NavLink></li>
-        <li><NavLink to='/contact'>Contact</NavLink></li>
+        {
+            user?.email ? <>
+            <li><NavLink to='/bookings'>My Bookings</NavLink></li>
+            <li><NavLink to={'/'}><button onClick={handleLogOut}>Log Out</button></NavLink></li>
+            </> :
+            <li><NavLink to='/login'>Login</NavLink></li>
+        }
     </>
 
     return (
@@ -56,6 +71,9 @@ const NavBar = () => {
                 <ul className="menu menu-horizontal px-1 gap-2">
                     {navItems}
                 </ul>
+            </div>
+            <div>
+                {user && <p>name: {user.displayName}</p>}
             </div>
             <div className="navbar-end">
                 <div className='flex gap-4 mr-4 items-center justify-end w-full'>
